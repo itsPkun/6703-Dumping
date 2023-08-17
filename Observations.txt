@@ -1,10 +1,9 @@
 Some observations
 
-1. While BA is LOW, the PLA only allows writes to the internal RAM (for IRQ/JSR presumedly). This means that any Read-Modify-Write instruction performed on anything using the PLA R/W signal (VIC, external RAM, and potentially Colour RAM) runs the risk of not being able to do the second (correct) write if BA asserts between two consecutive writes. This doesn't appear to cause problems with single cycle writes as BA should be asserted while clock LOW.
-
+1. While BA is LOW, the PLA only allows writes to the internal RAM (for IRQ/JSR presumedly). This means that any Read-Modify-Write instruction performed on anything using the PLA R/W signal (VIC, external RAM, and potentially Colour RAM) runs the risk of not being able to do the second (correct) write if BA asserts between two consecutive writes. This doesn't appear to cause problems with single cycle writes as BA appears to be asserted by VIC while clock LOW.
 This could also be a failure of the dumping method as the PLA might even have a three clock BA delay that dumping EPROM style doesn't take into consideration.
 
-2. While clock is LOW, A14 and A15 effectively do nothing. You have a 16k Address bus at this point. Any external add-on should force A14-A15 for itself locally by checking the phase of the clock signal. This would apply to while AEC is low but that signal isn't present on the MAX's cartridge port. Counting three clocks from BA assertion can approximate AEC.
+2. While clock is LOW, A14 and A15 effectively do nothing. You have a 16k Address bus at this point. Any external add-on should force A14-A15 for itself locally by checking the phase of the clock signal. This would apply while AEC is low also but that signal isn't present on the MAX's cartridge port. Counting three clocks from BA assertion can approximate AEC.
 
 3. No Mirrors in unused address space. It's yours for the taking. Want a 32k MAX BASIC? You should be able to do it (caveats above and below). Heck, ignore ROML and stick the BASIClow ROM at B000 for 40k continous bytes.
 
@@ -12,6 +11,6 @@ This could also be a failure of the dumping method as the PLA might even have a 
 
 5. While BA is LOW it doesn't appear possible to write to the SID as chip_select doesn't get asserted. 
 
-6. The 4-bit databus transceiver for Colour RAM is probably activated by the Colour RAM chip select going LOW during CPU time. During VIC time it should be disabled. I have not tested this assumption yet.
+6. The 4-bit databus transceiver for Colour RAM is probably activated by the Colour RAM chip select going LOW during CPU time. During VIC time (clock and/or BA going LOW) it should be disabled. I have not tested this assumption yet.
 
 More to come?
